@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
+    let events = {};
 
     function generateCalendar(month, year) {
         calendar.innerHTML = '';
@@ -47,9 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 } else {
                     dayDiv.textContent = date;
-                    dayDiv.addEventListener('click', () => {
-                        dayDiv.classList.toggle('run');
-                    });
+                    if (events[`${year}-${month + 1}-${date}`]) {
+                        dayDiv.classList.add('run');
+                    }
+                    dayDiv.addEventListener('click', () => openEventModal(date, month, year));
                     date++;
                 }
                 weekDiv.appendChild(dayDiv);
@@ -85,5 +87,28 @@ document.addEventListener('DOMContentLoaded', () => {
         generateCalendar(currentMonth, currentYear);
     }
 
-    generateCalendar(currentMonth, currentYear);
-});
+    function openEventModal(date, month, year) {
+        const modal = document.getElementById('eventModal');
+        const span = document.getElementsByClassName('close')[0];
+        const selectedDate = document.getElementById('selectedDate');
+        const eventDetails = document.getElementById('eventDetails');
+        const saveEvent = document.getElementById('saveEvent');
+        
+        const key = `${year}-${month + 1}-${date}`;
+        selectedDate.textContent = `${year}-${month + 1}-${date}`;
+        eventDetails.value = events[key] || '';
+
+        modal.style.display = 'block';
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        saveEvent.onclick = function() {
+            const details = event
