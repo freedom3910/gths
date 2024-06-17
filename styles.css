@@ -70,3 +70,43 @@ h1 {
 p {
     margin: 10px 0;
 }
+
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+#calendar {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.month {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+}
+
+.week {
+    display: flex;
+    justify-content: space-between;
+}
+
+.day {
+    width: 40px;
+    height: 40px;
+    margin: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.day.run {
+    background-color: #87CEEB;
+}
