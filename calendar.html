@@ -18,19 +18,19 @@
     </nav>
     </header>
     <main>
-        <h2>跑步日历</h2>
+   <h2>跑步日历</h2>
+        <div id="calendar"></div>
+    </main>
 
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Running Calendar</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h1>Running Calendar</h1>
-    <div id="calendar"></div>
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>跑步活动详情</h2>
+            <p id="selectedDate"></p>
+            <textarea id="eventDetails" rows="4" cols="50" placeholder="输入活动详情..."></textarea>
+            <button id="saveEvent">保存</button>
+        </div>
+    </div>
 
     <script src="scripts.js"></script>
 </body>
