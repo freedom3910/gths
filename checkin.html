@@ -29,3 +29,30 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+
+<form id="checkinForm" enctype="multipart/form-data">
+  <input type="text" name="username" placeholder="用户名" required>
+  <input type="number" name="distance" placeholder="跑步距离（公里）" required>
+  <input type="file" name="screenshot" accept="image/*" required>
+  <button type="submit">打卡</button>
+</form>
+<script>
+  document.getElementById('checkinForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    fetch('http://localhost:3000/checkin', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('打卡成功');
+      } else {
+        alert('打卡失败');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
+</script>
