@@ -112,3 +112,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         saveEvent.onclick = function() {
             const details = event
+
+            document.getElementById('checkin-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('username', document.getElementById('username').value);
+    formData.append('distance', document.getElementById('distance').value);
+    formData.append('screenshot', document.getElementById('screenshot').files[0]);
+
+    fetch('https://your-backend-url.com/checkin', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('打卡成功！');
+        } else {
+            alert('打卡失败，请重试。');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('打卡失败，请重试。');
+    });
+});
