@@ -1,49 +1,55 @@
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
-const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
+// 连接MongoDB数据库
 mongoose.connect('mongodb://localhost:27017/gths', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
 
-const CheckinSchema = new mongoose.Schema({
-  username: String,
-  distance: Number,
-  screenshot: String,
-  date: { type: Date, default: Date.now }
+// 定义Checkin模型
+const checkinSchema = new mongoose.Schema({
+    name: String,
+    distance: Number,
+    screenshot: String,
+    date: { type: Date, default: Date.now }
 });
 
-const Checkin = mongoose.model('Checkin', CheckinSchema);
+const Checkin = mongoose.model('Checkin', checkinSchema);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'uploads')));
-
+// 设置multer用于文件上传
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
-app.post('/checkin', upload.single('screenshot'), (req, res) => {
-  const { username, distance } = req.body;
-  const screenshot = req.file.filename;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-  const newCheckin = new Checkin({ username, distance, screenshot });
-  newCheckin.save()
-    .then(() => res.status(200).json({ success: true, message: '打卡成功' }))
-    .catch(err => res.status(500).json({ success: false, message: '服务器错误' }));
+// 处理打卡数据的POST请求
+app.post('/checkin', upload.single('screenshot'), async (req, res) => {
+  const { name, distance } = req.body;
+  const screenshot = req.file.path;
+
+  const checkin = new Checkin({ name, distance, screenshot });
+  try {
+    await checkin.save();
+    res.status(201).send('打卡成功');
+  } catch (err) {
+    res.status(400).send('打卡失败');
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
